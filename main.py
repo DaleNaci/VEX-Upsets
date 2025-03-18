@@ -1,5 +1,5 @@
 import os
-from pprint import pprint
+import sys
 
 import requests # type: ignore
 from dotenv import load_dotenv # type: ignore
@@ -13,7 +13,11 @@ HEADERS = {"Authorization": f"Bearer {API_KEY}"}
 
 
 def main():
-    event_id = get_event_id("RE-V5RC-24-9258")
+    if len(sys.argv) != 2:
+        print("Invalid arguments.")
+        exit(1)
+
+    event_id = get_event_id(sys.argv[1])
     
     match_list_data = get_match_list(event_id)
     match_list = simplify_match_list_data(match_list_data)
@@ -146,7 +150,7 @@ def find_upsets(match_list: list, team_rankings: dict):
 
     for upset in sorted_upsets:
         print(f"Qualification #{upset["matchnum"]}")
-        print(f"{upset["blue1"]} {upset["blue2"]}   {upset["bluescore"]} - {upset["redscore"]}   {upset["red1"]} {upset["red2"]}")
+        print(f"[B] {upset["blue1"]} {upset["blue2"]}   {upset["bluescore"]} - {upset["redscore"]}   {upset["red1"]} {upset["red2"]} [R]")
         print("Blue average ranking:", upset["blue_avg"])
         print("Red average ranking:", upset["red_avg"])
         print("Average difference:", upset["avg_diff"])
